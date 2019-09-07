@@ -11,7 +11,7 @@ var con = mysql.createConnection({
 con.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");
-  var sql = "ALTER TABLE venues ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY";
+  var sql = "INSERT INTO venues ( name, latitude, longitude ) VALUES ('hillsdale', 41.9, -84.6)";
   con.query(sql , function (err, result) {
     if (err) throw err;
     console.log("Database created");

@@ -28,6 +28,10 @@
 	<button onclick="create_venue()">Make it go</button>
 </div>
 
+<div id="response">
+
+</div>
+
 <!--Start JS. Include files first.-->
 <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
@@ -38,6 +42,7 @@
 	//center map on bend
 	var mymap = L.map('mapid').setView([44.0, -121.3], 13);
 
+	//Load slippy map.
 	var titleLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 		maxZoom: 18,
@@ -45,24 +50,39 @@
 		accessToken: 'pk.eyJ1Ijoia2F3dGh1bGRyb2siLCJhIjoiY2swNzdlcnBqNDN1bDNtbXYxaTZiNzltaiJ9.o6GlDt0dN1jAk9kYAVF2rQ'
 	}).addTo(mymap);
 
-
 	//Initial marker/map placement over bend.
 	var venue_bend = L.marker([44.0, -121.3], { title: 'bend' }).addTo(mymap);
+
+	//Create the Ajax request object.
+	var xhttp = new XMLHttpRequest();
+	//Call back function to alert user that venue was added to the DB properly.
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			document.getElementById("response").innerHTML = this.responseText;
+		}
+  	};
 
 	function create_venue(){
 		var v_name = document.getElementById('name').value;
 		var v_latitude = document.getElementById('latitude').value;
 		var v_longitude = document.getElementById('longitude').value;
-
+		var vdata = v_name + "," + v_latitude + "," + v_longitude;
+		var vdata = "venue=" + v_name + "&" + "latitude=" + v_latitude + "&" + "longitude=" + v_longitude;
+console.log(vdata);
 		if ( v_name== "" || v_latitude == "" || v_longitude == "" ){
 			alert("Please fill out all fields correctly.");
 		} else {
 			//create marker and add venue to SQL database
 			L.marker([v_latitude, v_longitude], { title: v_name }).addTo(mymap);
-			//ajax call to SQL
 			mymap.setView([v_latitude, v_longitude], 10);
+			//Make ajax request.
+			xhttp.open("POST", "http://localhost:8080", true);
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.send(vdata);
+			
 		}
 	}
+
 </script>
 </body>
 
