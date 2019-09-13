@@ -2,6 +2,8 @@ const http = require('http');
 const qs = require('querystring');
 const mysql = require('mysql');
 
+//Connection to mysql server.
+//Mysql code taken from https://stackoverflow.com/a/53919762
 var con = mysql.createConnection({
   host: "192.168.10.105",
   user: "test",
@@ -24,7 +26,7 @@ function send_to_sql(name, latitude, longitude) {
 	  });
 	});
 }
-//server stuff
+//server stuff - taken from https://stackoverflow.com/a/4310087
 http.createServer(function(request, response) {
     if(request.method == 'POST') {
         var body = ''; 
