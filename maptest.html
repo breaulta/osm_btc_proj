@@ -83,6 +83,19 @@ console.log(vdata);
 		}
 	}
 
+	//Right click code taken from Leaflet Quickstart Tutorial.
+	var popup = L.popup();
+
+	function onRightClick(e) {
+		popup
+			.setLatLng(e.latlng)
+			.setContent("You clicked the map at " + e.latlng.toString())
+			.openOn(mymap);
+	}
+
+	//Right mouse click fires 'contextmenu' type event. On this event run the handler function.
+	mymap.on('contextmenu', onRightClick);
+
 </script>
 </body>
 
