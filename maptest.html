@@ -9,7 +9,7 @@
 <style>
 
 	#mapid { 
-		height: 100vh;
+		height: 50vh;
 		width: 100vw;
 	}
 
@@ -84,8 +84,9 @@ console.log(vdata);
 	}
 
 	//Right click code taken from Leaflet Quickstart Tutorial.
+	//probably html inside this.
 	var popup = L.popup();
-
+	//handler function.
 	function onRightClick(e) {
 		popup
 			.setLatLng(e.latlng)
