@@ -77,7 +77,7 @@ alert(this.responseText);
 			L.marker([v_latitude, v_longitude], { title: v_name }).addTo(mymap);
 			mymap.setView([v_latitude, v_longitude], 10);
 			//Make ajax request.
-			xhttp.open("POST", "http://qrcodes4bitcoin.com/server:12001", true);
+			xhttp.open("POST", "http://qrcodes4bitcoin.com/server", true);
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xhttp.send(vdata);
 			
