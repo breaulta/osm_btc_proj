@@ -3,12 +3,6 @@ const qs = require('querystring');
 const mysql = require('mysql');
 const fs = require('fs');
 
-fs.writeFile("test_node_isrunning", "Node successfully started yo.", function(err) {
-    if(err) {
-        return console.log(err);
-    }
-});
-
 //Connection to mysql server.
 //Mysql code taken from https://stackoverflow.com/a/53919762
 var con = mysql.createConnection({
@@ -22,7 +16,12 @@ var con = mysql.createConnection({
 function send_to_sql(name, latitude, longitude) {
 	con.connect(function(err) {
 	  if (err) throw err;
-	  console.log("Connected!");
+	  //console.log("Connected!");
+		var stream = fs.createWriteStream("test_log.txt");
+            stream.once('open', function(fd) {
+            stream.write("Connected to sql.\n");
+            stream.end();
+        });
 	  //var sql = "ALTER TABLE venues ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY";
 	  var sql = "INSERT INTO venues ( name, latitude, longitude ) VALUES ('"+name+"','" +latitude+"','"+longitude+"')";
 	  con.query(sql , function (err, result) {
@@ -52,8 +51,13 @@ http.createServer(function(request, response) {
             // use post['blah'], etc.
             console.log(post);
 			result = send_to_sql(post.venue, post.latitude, post.longitude);
-console.log(result);
-response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
+			//logging
+			var stream = fs.createWriteStream("log_result.txt");
+				stream.once('open', function(fd) {
+				stream.write(result);
+				stream.end();
+			});
+			response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
             response.end(result);
         });
   
