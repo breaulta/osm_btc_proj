@@ -17,8 +17,14 @@ http.createServer(function(request, response) {
 
         request.on('end', function () {
             var post = qs.parse(body);
-			//post.venue, post.latitude, post.longitude
 			reply = "Data Received! name:"+post.venue+" latitude:"+post.latitude+" longitude:"+post.longitude;
+			var stream = fs.createWriteStream("test_log.txt");
+				stream.once('open', function(fd) {
+				stream.write("Data received from client:\n");
+				stream.write(reply);
+				stream.end();
+			});
+			//post.venue, post.latitude, post.longitude
 			response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
             response.end(reply);
         });
@@ -27,8 +33,7 @@ http.createServer(function(request, response) {
 		//test printing a logfile
 		var stream = fs.createWriteStream("test_log.txt");
 			stream.once('open', function(fd) {
-  			stream.write("My first row\n");
-  			stream.write("My second row\n");
+  			stream.write("non post request received!\n");
 			stream.end();
 		});
 
