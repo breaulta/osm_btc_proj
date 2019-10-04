@@ -1,6 +1,13 @@
 const http = require('http');
 const qs = require('querystring');
 const mysql = require('mysql');
+const fs = require('fs');
+
+fs.writeFile("test_node_isrunning", "Node successfully started yo.", function(err) {
+    if(err) {
+        return console.log(err);
+    }
+});
 
 //Connection to mysql server.
 //Mysql code taken from https://stackoverflow.com/a/53919762
@@ -22,7 +29,7 @@ function send_to_sql(name, latitude, longitude) {
 		if (err) throw err;
 		var success = "Successfully entered into MySQL";
 		console.log(success);
-		return success;
+		return result;
 	  });
 	});
 }
@@ -55,4 +62,4 @@ response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
  //       response.end();
     }
 
-}).listen(80);
+}).listen(12001);

@@ -1,5 +1,6 @@
 const http = require('http');
 const qs = require('querystring');
+const fs = require('fs');
 
 http.createServer(function(request, response) {
     if(request.method == 'POST') {
@@ -19,12 +20,20 @@ http.createServer(function(request, response) {
             // use post['blah'], etc.
 			console.log(post);
 response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
-            response.end('worked!');
+            response.end('POST received successfully.');
         });
 
     } else {
-//        response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
- //       response.end();
+		//test printing a logfile
+		var stream = fs.createWriteStream("test_log.txt");
+			stream.once('open', function(fd) {
+  			stream.write("My first row\n");
+  			stream.write("My second row\n");
+			stream.end();
+		});
+
+        response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
+        response.end('Non POST request received.');
     }
 
-}).listen(8080);
+}).listen(12001);
