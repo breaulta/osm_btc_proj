@@ -17,10 +17,10 @@ http.createServer(function(request, response) {
 
         request.on('end', function () {
             var post = qs.parse(body);
-            // use post['blah'], etc.
-			console.log(post);
-response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
-            response.end('POST received successfully.');
+			//post.venue, post.latitude, post.longitude
+			reply = "Data Received! name:"+post.venue+" latitude:"+post.latitude+" longitude:"+post.longitude;
+			response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
+            response.end(reply);
         });
 
     } else {
