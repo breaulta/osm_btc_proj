@@ -59,7 +59,7 @@
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			document.getElementById("response").innerHTML = this.responseText;
-alert(this.responseText);
+			alert(this.responseText);
 		}
   	};
 
@@ -67,20 +67,22 @@ alert(this.responseText);
 		var v_name = document.getElementById('name').value;
 		var v_latitude = document.getElementById('latitude').value;
 		var v_longitude = document.getElementById('longitude').value;
-		var vdata = v_name + "," + v_latitude + "," + v_longitude;
+		//Set up data to be sent to server in a format x-www-form-urlencoded can use.
+		//In the future we need to revisit this implementation with web secuity in mind.
 		var vdata = "venue=" + v_name + "&" + "latitude=" + v_latitude + "&" + "longitude=" + v_longitude;
-//console.log(vdata);
 		if ( v_name== "" || v_latitude == "" || v_longitude == "" ){
 			alert("Please fill out all fields correctly.");
-		} else {
-			//create marker and add venue to SQL database
+		} else {  //create marker and add venue to send to server which will then add it to the SQL database.
+			//Create marker and add to map.	
 			L.marker([v_latitude, v_longitude], { title: v_name }).addTo(mymap);
+			//Center the map on the newly created marker. 10 is the zoom factor.
 			mymap.setView([v_latitude, v_longitude], 10);
 			//Make ajax request.
 			xhttp.open("POST", "http://qrcodes4bitcoin.com/server", true);
+			//This content type was the first type that worked.  We can change if we want. The data format will have to change on the server
+			//as well if we do change or it won't work however.
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xhttp.send(vdata);
-			
 		}
 	}
 

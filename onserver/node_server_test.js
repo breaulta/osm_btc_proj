@@ -1,6 +1,7 @@
+//Load modules.
 const http = require('http');
-const qs = require('querystring');
-const fs = require('fs');
+const qs = require('querystring');  //For parsing POST requests.
+const fs = require('fs');			//File system. Used for log files.
 const mysql = require('mysql');
 
 //Connection to mysql server.
@@ -13,7 +14,6 @@ var con = mysql.createConnection({
   database: "qrcofhgs_testdb"
 });
 
-
 function send_to_sql(name, latitude, longitude) {
     con.connect(function(err) {
       if (err) throw err;
@@ -24,6 +24,7 @@ function send_to_sql(name, latitude, longitude) {
             stream.end();
         });
       //var sql = "ALTER TABLE venues ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY";
+	  //Revisit with mysql security proceedures. Change variable names to placeholders(?) to prevent sql injection.
       var sql = "INSERT INTO venues ( name, latitude, longitude ) VALUES ('"+name+"','" +latitude+"','"+longitude+"')";
       con.query(sql , function (err, result) {
         if (err) throw err;
@@ -38,16 +39,19 @@ http.createServer(function(request, response) {
     if(request.method == 'POST') {
 		var body = '';
 
+		//When we have all of the data, run this function which stores the data into the variable 'body'.
         request.on('data', function (data) {
+			//Take data received from POST request and store it in body.
             body += data;
-
+			// The below code doesn't work because we're checking a string lenght, not the header variable.
             // Too much POST data, kill the connection!
             // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-            if (body.length > 1e6)
-                request.connection.destroy();
+            //if (body.length > 1e6)
+              //  request.connection.destroy();
         });
 
         request.on('end', function () {
+			//Take the POST request data and put into object as key-value pairs.
             var post = qs.parse(body);
 			reply = "Data Received! name:"+post.venue+" latitude:"+post.latitude+" longitude:"+post.longitude;
 			var stream = fs.createWriteStream("rcvd_log.txt");
@@ -56,8 +60,8 @@ http.createServer(function(request, response) {
 				stream.write(reply);
 				stream.end();
 			});
-//sql stuff
-result = send_to_sql(post.venue, post.latitude, post.longitude);
+			//sql stuff
+			result = send_to_sql(post.venue, post.latitude, post.longitude);
 			//post.venue, post.latitude, post.longitude
 			response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
             response.end(reply);
@@ -75,4 +79,4 @@ result = send_to_sql(post.venue, post.latitude, post.longitude);
         response.end('Non POST request received.');
     }
 
-}).listen(12001);
+}).listen();
