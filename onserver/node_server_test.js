@@ -25,8 +25,9 @@ function send_to_sql(name, latitude, longitude) {
         });
       //var sql = "ALTER TABLE venues ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY";
 	  //Revisit with mysql security proceedures. Change variable names to placeholders(?) to prevent sql injection.
-      var sql = "INSERT INTO venues ( name, latitude, longitude ) VALUES ('"+name+"','" +latitude+"','"+longitude+"')";
-      con.query(sql , function (err, result) {
+	  //Escape values to prevent SQL injection attack.
+      var sql = "INSERT INTO venues ( name, latitude, longitude ) VALUES ( ?, ?, ?)";
+      con.query(sql, [name, latitude, longitude], function (err, result) {
         if (err) throw err;
         var success = "Successfully entered into MySQL";
         console.log(success);
