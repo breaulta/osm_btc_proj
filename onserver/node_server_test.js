@@ -39,7 +39,7 @@ function delete_loc_from_sql(name) {
     con.connect(function(err) {
       if (err) throw err;
 	  //Use placeholders (?) to prevent injection attack.
-      var sql = "DELETE FROM venues WHERE name=(name) VALUES (?)";
+      var sql = "DELETE FROM venues WHERE name = ?";
       con.query(sql, [name], function (err, result) {
         if (err) throw err;
         return result;
