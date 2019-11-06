@@ -18,14 +18,19 @@
 <!--HTML goes here.-->
 <div id="mapid"></div>
 
-<div id="inputs">
+<div id="inputs_add">
 	<label>Venue Name</label>
 	<input type="text" id="name">
 	<label>Latitude</label>
 	<input type="text" id="latitude">
 	<label>Longitude</label>
 	<input type="text" id="longitude"><br>
-	<button onclick="create_venue()">Make it go</button>
+	<button onclick="create_venue()">Add Location</button>
+</div>
+<div id="inputs_delete">
+	<label>Venue Name</label>
+	<input type="text" id="delete_name">
+	<button onclick="delete_location()">Delete Location</button>
 </div>
 
 <div id="response">
@@ -69,7 +74,7 @@
 		var v_longitude = document.getElementById('longitude').value;
 		//Set up data to be sent to server in a format x-www-form-urlencoded can use.
 		//In the future we need to revisit this implementation with web secuity in mind.
-		var vdata = "venue=" + v_name + "&" + "latitude=" + v_latitude + "&" + "longitude=" + v_longitude;
+		var vdata = "action=add&venue=" + v_name + "&" + "latitude=" + v_latitude + "&" + "longitude=" + v_longitude;
 		if ( v_name== "" || v_latitude == "" || v_longitude == "" ){
 			alert("Please fill out all fields correctly.");
 		} else {  //create marker and add venue to send to server which will then add it to the SQL database.
@@ -84,6 +89,14 @@
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xhttp.send(vdata);
 		}
+	}
+
+	function delete_location(){
+		var d_name = document.getElementById('delete_name').value;
+		var ddata = "action=delete&venue="+ d_name;
+		xhttp.open("POST", "http://qrcodes4bitcoin.com/server", true);
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send(ddata);
 	}
 
 	//Right click code taken from Leaflet Quickstart Tutorial.

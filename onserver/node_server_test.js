@@ -35,15 +35,13 @@ function add_loc_to_sql(name, latitude, longitude) {
     });
 }
 
-function delete_loc_from_sql(name, latitude, longitude) {
+function delete_loc_from_sql(name) {
     con.connect(function(err) {
       if (err) throw err;
 	  //Use placeholders (?) to prevent injection attack.
       var sql = "DELETE FROM venues WHERE name=(name) VALUES (?)";
       con.query(sql, [name], function (err, result) {
         if (err) throw err;
-        var success = "Successfully entered into MySQL";
-        console.log(success);
         return result;
       });
     });
@@ -68,18 +66,25 @@ http.createServer(function(request, response) {
         request.on('end', function () {
 			//Take the POST request data and put into object as key-value pairs.
             var post = qs.parse(body);
-			reply = "Data Received! name:"+post.venue+" latitude:"+post.latitude+" longitude:"+post.longitude;
-			var stream = fs.createWriteStream("rcvd_log.txt");
-				stream.once('open', function(fd) {
-				stream.write("Data received from client:\n");
-				stream.write(reply);
-				stream.end();
-			});
-			//sql stuff
-			result = add_loc_to_sql(post.venue, post.latitude, post.longitude);
-			//post.venue, post.latitude, post.longitude
-			response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
-            response.end(reply);
+			if (post.action == 'add'){
+				reply = "Add command received! name:"+post.venue+" latitude:"+post.latitude+" longitude:"+post.longitude;
+				var stream = fs.createWriteStream("rcvd_log.txt");
+					stream.once('open', function(fd) {
+					stream.write("Data received from client:\n");
+					stream.write(reply);
+					stream.end();
+				});
+				//sql stuff
+				result = add_loc_to_sql(post.venue, post.latitude, post.longitude);
+				//post.venue, post.latitude, post.longitude
+				response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
+				response.end(reply);
+			}else if (post.action == 'delete'){
+				reply = "Delete command received! name:"+post.venue;
+				result = delete_loc_from_sql(post.venue);	
+				response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
+				response.end(reply);
+			}
         });
 
     } else {
