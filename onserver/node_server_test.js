@@ -14,7 +14,7 @@ var con = mysql.createConnection({
   database: "qrcofhgs_testdb"
 });
 
-function send_to_sql(name, latitude, longitude) {
+function add_loc_to_sql(name, latitude, longitude) {
     con.connect(function(err) {
       if (err) throw err;
       //console.log("Connected!");
@@ -24,8 +24,7 @@ function send_to_sql(name, latitude, longitude) {
             stream.end();
         });
       //var sql = "ALTER TABLE venues ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY";
-	  //Revisit with mysql security proceedures. Change variable names to placeholders(?) to prevent sql injection.
-	  //Escape values to prevent SQL injection attack.
+	  //Use placeholders (?) to prevent injection attack.
       var sql = "INSERT INTO venues ( name, latitude, longitude ) VALUES ( ?, ?, ?)";
       con.query(sql, [name, latitude, longitude], function (err, result) {
         if (err) throw err;
@@ -35,6 +34,21 @@ function send_to_sql(name, latitude, longitude) {
       });
     });
 }
+
+function delete_loc_from_sql(name, latitude, longitude) {
+    con.connect(function(err) {
+      if (err) throw err;
+	  //Use placeholders (?) to prevent injection attack.
+      var sql = "DELETE FROM venues WHERE name=(name) VALUES (?)";
+      con.query(sql, [name], function (err, result) {
+        if (err) throw err;
+        var success = "Successfully entered into MySQL";
+        console.log(success);
+        return result;
+      });
+    });
+}
+
 
 http.createServer(function(request, response) {
     if(request.method == 'POST') {
@@ -62,7 +76,7 @@ http.createServer(function(request, response) {
 				stream.end();
 			});
 			//sql stuff
-			result = send_to_sql(post.venue, post.latitude, post.longitude);
+			result = add_loc_to_sql(post.venue, post.latitude, post.longitude);
 			//post.venue, post.latitude, post.longitude
 			response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
             response.end(reply);
