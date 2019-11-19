@@ -15,36 +15,48 @@ var con = mysql.createConnection({
 });
 
 function add_loc_to_sql(name, latitude, longitude) {
-    con.connect(function(err) {
-      if (err) throw err;
+    //con.connect(function(err) {
+      //if (err) throw err;
       //console.log("Connected!");
-        var stream = fs.createWriteStream("conn_log.txt");
-            stream.once('open', function(fd) {
-            stream.write("Connected to sql.\n");
-            stream.end();
-        });
-      //var sql = "ALTER TABLE venues ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY";
-	  //Use placeholders (?) to prevent injection attack.
-      var sql = "INSERT INTO venues ( name, latitude, longitude ) VALUES ( ?, ?, ?)";
-      con.query(sql, [name, latitude, longitude], function (err, result) {
-        if (err) throw err;
-        var success = "Successfully entered into MySQL";
-        console.log(success);
-        return result;
-      });
+       // var stream = fs.createWriteStream("conn_log.txt");
+       //     stream.once('open', function(fd) {
+       //     stream.write("Connected to sql.\n");
+       //     stream.end();
+       // });
+   // });
+    //var sql = "ALTER TABLE venues ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY";
+	//Use placeholders (?) to prevent injection attack.
+    var sql = "INSERT INTO venues ( name, latitude, longitude ) VALUES ( ?, ?, ?)";
+    con.query(sql, [name, latitude, longitude], function (err, result) {
+    	if (err) throw err;
+    	var success = "Successfully entered into MySQL";
+    	console.log(success);
+    	return result;
     });
 }
 
-function delete_loc_from_sql(name) {
+//Properly uses callback to return the error value
+function delete_loc_from_sql(name, callback) {
+	var reply;
     con.connect(function(err) {
       if (err) throw err;
-	  //Use placeholders (?) to prevent injection attack.
-      var sql = "DELETE FROM venues WHERE name = ?";
-      con.query(sql, [name], function (err, result) {
-        if (err) throw err;
-        return result;
-      });
     });
+	  //Use placeholders (?) to prevent injection attack.
+      var sql = "DELETE FROM venuesx WHERE name = ?";
+	//err, result are objects, so returning the whole thing caused a problem.
+      con.query(sql, [name], function (err, result) {
+        //if (err) throw err;
+		//reply = result.affectedRows;
+		//reply = err.code;
+        var stream = fs.createWriteStream("log.txt");
+            stream.once('open', function(fd) {
+            stream.write("first line\n");
+            stream.write(err.code);
+            stream.end();
+		});
+
+		callback(err.code);
+      });
 }
 
 
@@ -80,10 +92,14 @@ http.createServer(function(request, response) {
 				response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
 				response.end(reply);
 			}else if (post.action == 'delete'){
-				reply = "Delete command received! name:"+post.venue;
-				result = delete_loc_from_sql(post.venue);	
-				response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
-				response.end(reply);
+				//reply = "Delete command received! name:"+post.venue;
+				delete_loc_from_sql(post.venue, function(result){
+				//	result = delete_loc_from_sql(post.venue);	
+					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
+					response.end(result);
+
+				});
+
 			}
         });
 
