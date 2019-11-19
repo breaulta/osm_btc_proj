@@ -42,20 +42,17 @@ function delete_loc_from_sql(name, callback) {
       if (err) throw err;
     });
 	  //Use placeholders (?) to prevent injection attack.
-      var sql = "DELETE FROM venuesx WHERE name = ?";
+      var sql = "DELETE FROM venues WHERE name = ?";
 	//err, result are objects, so returning the whole thing caused a problem.
       con.query(sql, [name], function (err, result) {
-        //if (err) throw err;
-		//reply = result.affectedRows;
-		//reply = err.code;
-        var stream = fs.createWriteStream("log.txt");
-            stream.once('open', function(fd) {
-            stream.write("first line\n");
-            stream.write(err.code);
-            stream.end();
-		});
-
-		callback(err.code);
+        if (err) {
+			callback(err.code);
+		} else {
+			//reply = result.affectedRows;
+			//reply = err.code;
+			reply = "Rows affected:" + result.affectedRows;
+			callback(reply);
+		}
       });
 }
 
