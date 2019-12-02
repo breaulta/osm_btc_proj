@@ -5,7 +5,6 @@ const fs = require('fs');			//File system. Used for log files.
 const mysql = require('mysql');
 
 //Connection to mysql server.
-//Mysql code taken from https://stackoverflow.com/a/53919762
 var con = mysql.createConnection({
   host: "localhost",
   user: "qrcofhgs_testuser",
@@ -14,43 +13,31 @@ var con = mysql.createConnection({
   database: "qrcofhgs_testdb"
 });
 
-function add_loc_to_sql(name, latitude, longitude) {
-    //con.connect(function(err) {
-      //if (err) throw err;
-      //console.log("Connected!");
-       // var stream = fs.createWriteStream("conn_log.txt");
-       //     stream.once('open', function(fd) {
-       //     stream.write("Connected to sql.\n");
-       //     stream.end();
-       // });
-   // });
+function add_loc_to_sql(name, latitude, longitude, callback) {
+	var reply = '';
     //var sql = "ALTER TABLE venues ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY";
 	//Use placeholders (?) to prevent injection attack.
     var sql = "INSERT INTO venues ( name, latitude, longitude ) VALUES ( ?, ?, ?)";
     con.query(sql, [name, latitude, longitude], function (err, result) {
-    	if (err) throw err;
-    	var success = "Successfully entered into MySQL";
-    	console.log(success);
-    	return result;
+    	if (err) {
+			 callback(err.code);
+		} else {
+			reply += "Insert call completed. Rows affected:" + result.affectedRows;
+			callback(reply);
+		}
     });
 }
 
 //Properly uses callback to return the error value
 function delete_loc_from_sql(name, callback) {
-	var reply;
-    con.connect(function(err) {
-      if (err) throw err;
-    });
+	var reply = '';
 	  //Use placeholders (?) to prevent injection attack.
       var sql = "DELETE FROM venues WHERE name = ?";
-	//err, result are objects, so returning the whole thing caused a problem.
       con.query(sql, [name], function (err, result) {
         if (err) {
 			callback(err.code);
 		} else {
-			//reply = result.affectedRows;
-			//reply = err.code;
-			reply = "Rows affected:" + result.affectedRows;
+			reply += "Delete call completed. Rows affected:" + result.affectedRows;
 			callback(reply);
 		}
       });
@@ -65,11 +52,6 @@ http.createServer(function(request, response) {
         request.on('data', function (data) {
 			//Take data received from POST request and store it in body.
             body += data;
-			// The below code doesn't work because we're checking a string lenght, not the header variable.
-            // Too much POST data, kill the connection!
-            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-            //if (body.length > 1e6)
-              //  request.connection.destroy();
         });
 
         request.on('end', function () {
