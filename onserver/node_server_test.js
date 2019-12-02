@@ -58,30 +58,18 @@ http.createServer(function(request, response) {
 			//Take the POST request data and put into object as key-value pairs.
             var post = qs.parse(body);
 			if (post.action == 'add'){
-				reply = "Add command received! name:"+post.venue+" latitude:"+post.latitude+" longitude:"+post.longitude;
-				var stream = fs.createWriteStream("rcvd_log.txt");
-					stream.once('open', function(fd) {
-					stream.write("Data received from client:\n");
-					stream.write(reply);
-					stream.end();
+				//using the node callback structure on function calls is a must.
+				add_loc_to_sql(post.venue, post.latitude, post.longitude, function(result){
+					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
+                    response.end(result);
 				});
-				//sql stuff
-				result = add_loc_to_sql(post.venue, post.latitude, post.longitude);
-				//post.venue, post.latitude, post.longitude
-				response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
-				response.end(reply);
 			}else if (post.action == 'delete'){
-				//reply = "Delete command received! name:"+post.venue;
 				delete_loc_from_sql(post.venue, function(result){
-				//	result = delete_loc_from_sql(post.venue);	
 					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
 					response.end(result);
-
 				});
-
 			}
         });
-
     } else {
 		//test printing a logfile
 		var stream = fs.createWriteStream("nonpost_log.txt");
