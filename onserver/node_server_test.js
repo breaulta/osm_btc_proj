@@ -107,7 +107,7 @@ http.createServer(function(request, response) {
 			}else if(post.action == 'load') { //I chose to use 
 				load_table_from_sql( function(result){
 					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
-					response.end(result);
+					response.end('load' + result);
 				});
 			}
         });
