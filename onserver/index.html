@@ -32,6 +32,9 @@
 	<input type="text" id="delete_name">
 	<button onclick="delete_location()">Delete Location</button>
 </div>
+<div id="load_locations_from_sql_div">
+	<button onclick="load_locations()">Load Locations from SQL</button>
+</div>
 
 <div id="response">
 
@@ -44,6 +47,13 @@
 
 <!--Start Coding-->
 <script>
+
+	//When the page loads, run an initialization function.
+    window.onload = function () {
+		//put the map loading stuff here?
+		//and then load the markers from sql?
+	}
+
 	//center map on bend
 	var mymap = L.map('mapid').setView([44.0, -121.3], 13);
 
@@ -97,6 +107,13 @@
 		xhttp.open("POST", "http://qrcodes4bitcoin.com/server", true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhttp.send(ddata);
+	}
+
+	function load_locations(){
+		var ldata = "action=load";
+		xhttp.open("POST", "http://qrcodes4bitcoin.com/server", true);
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp.send(ldata);
 	}
 
 	//Right click code taken from Leaflet Quickstart Tutorial.
