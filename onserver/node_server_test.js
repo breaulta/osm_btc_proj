@@ -55,14 +55,18 @@ function load_table_from_sql(callback){
 	con.query( sql, function (err, results, fields) {
 		var stream = fs.createWriteStream("LOAD_TABLE_TEST.txt");
             stream.once('open', function(fd) {
-            stream.write("Error:\n");
-            stream.write(err);
-            stream.write("\nResults:\n");
-            stream.write(results);
-            stream.write("\nFields:\n");
-            stream.write(fields);
-            stream.end();
-        });
+				if (err) {
+            		stream.write("Error:\n");
+            		stream.write(err.join(','));
+					stream.end();
+            	} else {
+					stream.write("\nResults:\n");
+            		stream.write(results.join(','));
+					stream.write("\nFields:\n");
+					stream.write(fields.join(','));
+					stream.end();
+				}
+        	});
 		callback("place hold er");
 	});
 }
