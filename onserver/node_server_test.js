@@ -37,16 +37,34 @@ function add_loc_to_sql(name, latitude, longitude, callback) {
 //Properly uses callback to return the error value
 function delete_loc_from_sql(name, callback) {
 	var reply = '';
-	  //Use placeholders (?) to prevent injection attack.
-      var sql = "DELETE FROM venues WHERE name = ?";
-      con.query(sql, [name], function (err, result) {
-        if (err) {
+	//Use placeholders (?) to prevent injection attack.
+    var sql = "DELETE FROM venues WHERE name = ?";
+    con.query(sql, [name], function (err, result) {
+    	if (err) {
 			callback(err.code);
 		} else {
 			reply += "Delete call completed. Rows affected:" + result.affectedRows;
 			callback(reply);
 		}
-      });
+    });
+}
+
+function load_table_from_sql(callback){
+	var reply = '';
+	var sql = "SELECT * FROM venues";
+	con.query( sql, function (err, results, fields) {
+		var stream = fs.createWriteStream("LOAD_TABLE_TEST.txt");
+            stream.once('open', function(fd) {
+            stream.write("Error:\n");
+            stream.write(err);
+            stream.write("\nResults:\n");
+            stream.write(results);
+            stream.write("\nFields:\n");
+            stream.write(fields);
+            stream.end();
+        });
+		callback("place hold er");
+	});
 }
 
 http.createServer(function(request, response) {
@@ -69,16 +87,21 @@ http.createServer(function(request, response) {
         request.on('end', function () {  //We have received everything from the POST request.
 			//Take the POST request data and put into object as key-value pairs.
             var post = qs.parse(body);
-			if (post.action == 'add'){ //I chose to use 'add' to denote when to make an insertion query.
+			if(post.action == 'add'){ //I chose to use 'add' to denote when to make an insertion query.
 				//Using the node callback structure on function calls is a must in node.
 				add_loc_to_sql(post.venue, post.latitude, post.longitude, function(result){
 					//This code will execute once the query has completed and the callback has returned with the 'result' string.
 					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
                     response.end(result);
 				});
-			}else if (post.action == 'delete'){ //I chose to use 'delete' to denote when to make a delete query.
+			}else if(post.action == 'delete') { //I chose to use 'delete' to denote when to make a delete query.
 				delete_loc_from_sql(post.venue, function(result){
 					//This code will execute once the query has completed and the callback has returned with the 'result' string.
+					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
+					response.end(result);
+				});
+			}else if(post.action == 'load') { //I chose to use 
+				load_table_from_sql( function(result){
 					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
 					response.end(result);
 				});
