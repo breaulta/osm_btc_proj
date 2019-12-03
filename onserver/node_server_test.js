@@ -57,13 +57,13 @@ function load_table_from_sql(callback){
             stream.once('open', function(fd) {
 				if (err) {
             		stream.write("Error:\n");
-            		stream.write(err.join(','));
+            		stream.write(JSON.stringify(err));
 					stream.end();
             	} else {
 					stream.write("\nResults:\n");
-            		stream.write(results.join(','));
+            		stream.write(JSON.stringify(results));
 					stream.write("\nFields:\n");
-					stream.write(fields.join(','));
+            		stream.write(JSON.stringify(fields));
 					stream.end();
 				}
         	});
