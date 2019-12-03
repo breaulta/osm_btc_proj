@@ -65,9 +65,9 @@ function load_table_from_sql(callback){
 					stream.write("\nFields:\n");
             		stream.write(JSON.stringify(fields));
 					stream.end();
+					callback(JSON.stringify(results));
 				}
         	});
-		callback("place hold er");
 	});
 }
 
