@@ -72,9 +72,15 @@
 	var xhttp = new XMLHttpRequest();
 	//Call back function to alert user that venue was added to the DB properly.
 	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
+		if (this.readyState == 4 && this.status == 200) {  //response data is ready
 			document.getElementById("response").innerHTML = this.responseText;
-			alert(this.responseText);
+			var match_array;
+            match_array = /(.+)(\[.*)/.exec(this.responseText);
+            var directive = match_array[0]; 
+			//convert string response to json object
+			var table_data = JSON.parse(match_array[1]);
+console.log('dir:'directive);
+console.log(table_data);
 		}
 	};
 
