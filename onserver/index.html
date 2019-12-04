@@ -76,13 +76,13 @@
 			document.getElementById("response").innerHTML = this.responseText;
 			var match_array;
             match_array = /(.+)(\[.*)/.exec(this.responseText);
-            var directive = match_array[0]; 
+            var directive = match_array[1]; 
 			//convert string response to json object
-			var table_data = JSON.parse(match_array[1]);
-console.log('dir:'directive);
+			var table_data = JSON.parse(match_array[2]);
+console.log('dir:' + directive);
 console.log(table_data);
 		}
-	};
+	}
 
 	function create_venue(){
 		var v_name = document.getElementById('name').value;
