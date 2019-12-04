@@ -77,10 +77,15 @@
 			var match_array;
             match_array = /(.+)(\[.*)/.exec(this.responseText);
             var directive = match_array[1]; 
-			//convert string response to json object
-			var table_data = JSON.parse(match_array[2]);
-console.log('dir:' + directive);
-console.log(table_data);
+			//convert string response to json object 
+			var table_data_array = JSON.parse(match_array[2]);
+			if ( directive === "load" ) {
+				//for each object load marker onto map
+				for( var i = 0; i < table_data_array.length; i++){
+					console.log("i=" + i + ": " + table_data_array[i]);
+				}
+				
+			}
 		}
 	}
 
