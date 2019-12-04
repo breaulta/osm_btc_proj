@@ -83,6 +83,11 @@
 				//for each object load marker onto map
 				for( var i = 0; i < table_data_array.length; i++){
 					console.log("i=" + i + ": " + JSON.stringify(table_data_array[i]));
+					//Create marker and add to map. 
+//					L.marker([v_latitude, v_longitude], { title: v_name }).addTo(mymap);
+					L.marker([table_data_array[i].latitude, table_data_array[i].longitude], { title: table_data_array[i].name }).addTo(mymap);
+					//Center the map on the newly created marker. 10 is the zoom factor.
+					//mymap.setView([v_latitude, v_longitude], 10);
 				}
 				
 			}
