@@ -47,6 +47,7 @@
 
 <!--Start Coding-->
 <script>
+var marker_array = [];
 
 	//When the page loads, run an initialization function.	
 	window.onload = function () {
@@ -78,14 +79,15 @@
             match_array = /(.+)(\[.*)/.exec(this.responseText);
             var directive = match_array[1]; 
 			//convert string response to json object 
-			var table_data_array = JSON.parse(match_array[2]);
+			var table_arr = JSON.parse(match_array[2]);
 			if ( directive === "load" ) {
 				//for each object load marker onto map
-				for( var i = 0; i < table_data_array.length; i++){
-					console.log("i=" + i + ": " + JSON.stringify(table_data_array[i]));
+				for( var i = 0; i < table_arr.length; i++){
+					console.log("i=" + i + ": " + JSON.stringify(table_arr[i]));
 					//Create marker and add to map. 
 //					L.marker([v_latitude, v_longitude], { title: v_name }).addTo(mymap);
-					L.marker([table_data_array[i].latitude, table_data_array[i].longitude], { title: table_data_array[i].name }).addTo(mymap);
+					marker_array[i] = L.marker([table_arr[i].latitude, table_arr[i].longitude], { title: table_arr[i].name }).addTo(mymap);
+					marker_array[i].bindPopup(JSON.stringify(table_arr[i]));
 					//Center the map on the newly created marker. 10 is the zoom factor.
 					//mymap.setView([v_latitude, v_longitude], 10);
 				}
