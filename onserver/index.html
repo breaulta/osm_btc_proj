@@ -56,7 +56,7 @@ var marker_array = [];
 	}
 
 	//center map on bend
-	var mymap = L.map('mapid').setView([44.0, -121.3], 13);
+	var mymap = L.map('mapid').setView([44.0, -121.3], 5);
 
 	//Load slippy map.
 	var titleLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -77,9 +77,11 @@ var marker_array = [];
 			document.getElementById("response").innerHTML = this.responseText;
 			var match_array;
             match_array = /(.+)(\[.*)/.exec(this.responseText);
-            var directive = match_array[1]; 
-			//convert string response to json object 
-			var table_arr = JSON.parse(match_array[2]);
+			if (match_array){	//If the response from server contains SQL data.
+            	var directive = match_array[1]; 
+				//convert string response to json object 
+				var table_arr = JSON.parse(match_array[2]);
+			}
 			if ( directive === "load" ) {
 				//for each object load marker onto map
 				for( var i = 0; i < table_arr.length; i++){
