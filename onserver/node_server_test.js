@@ -3,6 +3,7 @@ const http = require('http');
 const qs = require('querystring');  //For parsing POST requests.
 const fs = require('fs');			//File system. Used for log files.
 const mysql = require('mysql');
+const sanitizeHtml = require('sanitize-html');	//Used to prevent cross site scripting.
 
 //Connection object to mysql server. Query methods will use the 'con' object.
 var con = mysql.createConnection({
@@ -75,6 +76,7 @@ http.createServer(function(request, response) {
 	//Handle POST request from client.
     if(request.method == 'POST') {
 		var body = '';
+		var clean_venue, clean_lat, clean_long;
 		//When we have all of the data, run this function which stores the data into the variable 'body'.
         request.on('data', function (data) {
 			//Take data received from POST request and store it in body.
@@ -88,23 +90,27 @@ http.createServer(function(request, response) {
 				request.connection.destroy();
             }
         });
-        request.on('end', function () {  //We have received everything from the POST request.
+        request.on('end', function () {	//We have received everything from the POST request.
 			//Take the POST request data and put into object as key-value pairs.
             var post = qs.parse(body);
-			if(post.action == 'add'){ //I chose to use 'add' to denote when to make an insertion query.
+			//Sanitize user inputs to prevent cross site scripting.
+			if(post.venue){ clean_venue = sanitizeHtml(post.venue); }
+			if(post.latitude){ clean_lat= sanitizeHtml(post.latitude); }
+			if(post.longitude){ clean_long= sanitizeHtml(post.longitude); }
+			if(post.action == 'add'){	//I chose to use 'add' to denote when to make an insertion query.
 				//Using the node callback structure on function calls is a must in node.
-				add_loc_to_sql(post.venue, post.latitude, post.longitude, function(result){
+				add_loc_to_sql(clean_venue, clean_lat, clean_long, function(result){
 					//This code will execute once the query has completed and the callback has returned with the 'result' string.
 					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
                     response.end(result);
 				});
 			}else if(post.action == 'delete') { //I chose to use 'delete' to denote when to make a delete query.
-				delete_loc_from_sql(post.venue, function(result){
+				delete_loc_from_sql(clean_venue, function(result){
 					//This code will execute once the query has completed and the callback has returned with the 'result' string.
 					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
 					response.end(result);
 				});
-			}else if(post.action == 'load') { //I chose to use 
+			}else if(post.action == 'load') { 
 				load_table_from_sql( function(result){
 					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
 					response.end('load' + result);

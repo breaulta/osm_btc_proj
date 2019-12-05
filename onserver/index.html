@@ -87,11 +87,9 @@ var marker_array = [];
 				for( var i = 0; i < table_arr.length; i++){
 					console.log("i=" + i + ": " + JSON.stringify(table_arr[i]));
 					//Create marker and add to map. 
-//					L.marker([v_latitude, v_longitude], { title: v_name }).addTo(mymap);
 					marker_array[i] = L.marker([table_arr[i].latitude, table_arr[i].longitude], { title: table_arr[i].name }).addTo(mymap);
+					//Bind popup on click to newly creaated marker.
 					marker_array[i].bindPopup(JSON.stringify(table_arr[i]));
-					//Center the map on the newly created marker. 10 is the zoom factor.
-					//mymap.setView([v_latitude, v_longitude], 10);
 				}
 				
 			}
