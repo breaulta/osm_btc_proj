@@ -135,6 +135,10 @@ var marker_array = [];
 		xhttp.send(ldata);
 	}
 
+	function create_marker(){
+		alert("marker created");
+	}
+
 	//Right click code taken from Leaflet Quickstart Tutorial.
 	//probably html inside this.
 	var popup = L.popup();
@@ -142,7 +146,8 @@ var marker_array = [];
 	function onRightClick(e) {
 		popup
 			.setLatLng(e.latlng)
-			.setContent("You clicked the map at " + e.latlng.toString())
+			//.setContent("You clicked the map at " + e.latlng.toString())
+			.setContent('<a id="new_marker_link" href="#" onclick="create_marker();return false;">Create new location</a>')
 			.openOn(mymap);
 	}
 
