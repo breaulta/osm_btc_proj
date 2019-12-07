@@ -138,11 +138,10 @@ var marker_array = [];
 	function create_marker(lat, lng){
 		var new_marker = L.marker( [lat, lng]).addTo(mymap);
 		//Bind popup on click to newly creaated marker.
-		new_marker.bindPopup('<div>name: <input type="text" id="venue_popup"><br>lat: <input type="text" id="latitude"><br>long: <input type="text" id="longitude">');
+		new_marker.bindPopup('<div>name: <input type="text" id="venue_popup"><br>lat: <input type="text" id="latitude"><br>long: <input type="text" id="longitude">').openPopup();
 	}
 
 	//Right click code taken from Leaflet Quickstart Tutorial.
-	//probably html inside this.
 	var popup = L.popup();
 	//handler function.
 	function onRightClick(e) {
