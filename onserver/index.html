@@ -135,8 +135,10 @@ var marker_array = [];
 		xhttp.send(ldata);
 	}
 
-	function create_marker(){
-		alert("marker created");
+	function create_marker(lat, lng){
+		var new_marker = L.marker( [lat, lng]).addTo(mymap);
+		//Bind popup on click to newly creaated marker.
+		new_marker.bindPopup('<div>name: <input type="text" id="venue_popup"><br>lat: <input type="text" id="latitude"><br>long: <input type="text" id="longitude">');
 	}
 
 	//Right click code taken from Leaflet Quickstart Tutorial.
@@ -147,7 +149,7 @@ var marker_array = [];
 		popup
 			.setLatLng(e.latlng)
 			//.setContent("You clicked the map at " + e.latlng.toString())
-			.setContent('<a id="new_marker_link" href="#" onclick="create_marker();return false;">Create new location</a>')
+			.setContent('<a id="new_marker_link" href="#" onclick="create_marker('+e.latlng.lat+', '+e.latlng.lng+');return false;">Create new location</a>')
 			.openOn(mymap);
 	}
 
