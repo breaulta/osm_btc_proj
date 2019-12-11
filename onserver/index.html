@@ -50,12 +50,39 @@
   color: #000;
   text-decoration: none;
   cursor: pointer;
-}`
+}
+
+#map-wrapper {
+    width: 100vw;;
+    height: 50vh;
+    position: relative;
+    border: 1px solid black;
+}
+
+#mapid {
+    width: 100%;
+    height: 100%;
+}
+
+#button-wrapper {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+	z-index: 1000;
+}
+
+#map_button {
+}
 
 </style></head>
 <body>
 <!--HTML goes here.-->
-<div id="mapid"></div>
+<div id="map-wrapper">
+	<div id="mapid"></div>
+	<div id="button-wrapper">
+		<button id="map_button" onclick="create_modal()">Add Location</button>
+	 </div> 
+</div>
 
 <!-- The Modal -->
 <div id="myModal" class="modal">
