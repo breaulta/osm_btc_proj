@@ -80,7 +80,7 @@
 <div id="map-wrapper">
 	<div id="mapid"></div>
 	<div id="button-wrapper">
-		<button id="map_button" onclick="create_modal()">Add Location</button>
+		<button id="map_button" onclick="create_modal()">Create New Little Locker</button>
 	 </div> 
 </div>
 
@@ -90,7 +90,12 @@
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close">&times;</span>
-    <p>Some text in the Modal..</p>
+	<div>
+		name: <input type="text" id="name">
+		<br>lat: <input type="text" id="latitude">
+		<br>long: <input type="text" id="longitude">
+		<br><button onclick="create_venue()">Add to mySQL database</button>
+	</div>
   </div>
 
 </div>
@@ -215,12 +220,16 @@ var marker_array = [];
 	function create_marker(lat, lng){
 		var new_marker = L.marker( [lat, lng]).addTo(mymap);
 		//Bind popup on click to newly creaated marker.
-		new_marker.bindPopup('<div>name: <input type="text" id="name"><br>lat: <input type="text" id="latitude" value="'+lat+'"><br>long: <input type="text" id="longitude" value="'+lng+'"><br><button onclick="create_venue()">Add Location</button>').openPopup();
+		new_marker.bindPopup('<div>name: <input type="text" id="name"><br>lat: <input type="text" id="latitude" value="'+lat+'"><br>long: <input type="text" id="longitude" value="'+lng+'"><br><button onclick="create_venue()">Add to mySQL database</button>').openPopup();
 	}
 
-	function create_modal(){
+	function create_modal(lat, lng){
 		console.log("create_overlay entered");
 		modal.style.display = "block";
+		//create_marker(lat, lng);
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+
 	}
 
 	//Right click code taken from Leaflet Quickstart Tutorial.
@@ -230,11 +239,10 @@ var marker_array = [];
 		popup
 			.setLatLng(e.latlng)
 			//.setContent("You clicked the map at " + e.latlng.toString())
-			.setContent('<a id="new_marker_link" href="#" onclick="create_marker('+e.latlng.lat+', '+e.latlng.lng+');return false;">Create new location</a>'+
-			'<br><a id="new_marker_link" href="#" onclick="create_modal();return false;">Show Modal Overlay</a>')
+			.setContent('<a id="new_marker_link" href="#" onclick="create_modal('+e.latlng.lat+', '+e.latlng.lng+');return false;">Show Modal Overlay</a>')
+//'<a id="new_marker_link" href="#" onclick="create_marker('+e.latlng.lat+', '+e.latlng.lng+');return false;">Create new location</a>'+
 			.openOn(mymap);
 	}
-
 	//Right mouse click fires 'contextmenu' type event. On this event run the handler function.
 	mymap.on('contextmenu', onRightClick);
 
