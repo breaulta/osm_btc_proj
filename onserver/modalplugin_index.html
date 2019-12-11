@@ -44,6 +44,8 @@
 <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
    crossorigin=""></script>
+<!--<script type="text/x-generic" src="test_node/L.Modal.min.js"></script>-->
+<script type="text/x-generic" src="https://github.com/w8r/Leaflet.Modal/blob/master/dist/L.Modal.min.js"></script>
 
 <!--Start Coding-->
 <script>
@@ -143,6 +145,28 @@ var marker_array = [];
 
 	function create_modal(){
 		console.log("create_overlay entered");
+	mymap.fire('modal', {
+      title: 'Custom header',
+      content: '<ul>' + (new Array(5)).join('<li>Content line</li>') + '</ul>',
+      template: ['<div class="modal-header"><h2>{title}</h2></div>',
+        '<hr>',
+        '<div class="modal-body">{content}</div>',
+        '<div class="modal-footer">',
+        '<button class="topcoat-button--large {OK_CLS}">{okText}</button>',
+        '<button class="topcoat-button--large {CANCEL_CLS}">{cancelText}</button>',
+        '</div>'
+      ].join(''),
+
+      okText: 'Ok',
+      cancelText: 'Cancel',
+      OK_CLS: 'modal-ok',
+      CANCEL_CLS: 'modal-cancel',
+
+      width: 30,
+	  height: 20,
+	  zIndex: 10000
+
+    });
 	}
 
 	//Right click code taken from Leaflet Quickstart Tutorial.
