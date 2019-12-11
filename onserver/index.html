@@ -44,7 +44,7 @@
 <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
    crossorigin=""></script>
-<script type="text/javascript" src="L.Modal.min.js"></script>
+<script type="text/x-generic" src="test_node/L.Modal.min.js"></script>
 
 <!--Start Coding-->
 <script>
@@ -159,7 +159,7 @@ var marker_array = [];
 			.setLatLng(e.latlng)
 			//.setContent("You clicked the map at " + e.latlng.toString())
 			.setContent('<a id="new_marker_link" href="#" onclick="create_marker('+e.latlng.lat+', '+e.latlng.lng+');return false;">Create new location</a>'+
-			'<a id="new_marker_link" href="#" onclick="create_overlay();return false;">Show Modal Overlay</a>')
+			'<br><a id="new_marker_link" href="#" onclick="create_overlay();return false;">Show Modal Overlay</a>')
 			.openOn(mymap);
 	}
 
