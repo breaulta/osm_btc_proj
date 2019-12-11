@@ -142,6 +142,15 @@ var marker_array = [];
 		new_marker.bindPopup('<div>name: <input type="text" id="name"><br>lat: <input type="text" id="latitude" value="'+lat+'"><br>long: <input type="text" id="longitude" value="'+lng+'"><br><button onclick="create_venue()">Add Location</button>').openPopup();
 	}
 
+	function create_overlay(){
+	  mymap.fire('modal', {
+      content: '<h1>Modal header</h1>' + (new Array(2)).join('<p>Content line</p>'),
+      width: 300,
+      height: 350
+    });
+
+	}
+
 	//Right click code taken from Leaflet Quickstart Tutorial.
 	var popup = L.popup();
 	//handler function.
@@ -149,7 +158,8 @@ var marker_array = [];
 		popup
 			.setLatLng(e.latlng)
 			//.setContent("You clicked the map at " + e.latlng.toString())
-			.setContent('<a id="new_marker_link" href="#" onclick="create_marker('+e.latlng.lat+', '+e.latlng.lng+');return false;">Create new location</a>')
+			.setContent('<a id="new_marker_link" href="#" onclick="create_marker('+e.latlng.lat+', '+e.latlng.lng+');return false;">Create new location</a>'+
+			'<a id="new_marker_link" href="#" onclick="create_overlay();return false;">Show Modal Overlay</a>')
 			.openOn(mymap);
 	}
 
