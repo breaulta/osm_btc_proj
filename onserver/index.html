@@ -123,7 +123,8 @@
 </div>
 
 <div id="response">
-
+</div>
+<div id="addr_lookup_results">
 </div>
 
 <!--Start JS. Include files first.-->
@@ -160,6 +161,7 @@ var marker_array = [];
 		geocoder.geocode(address, function(results) {    
 			latLng= new L.LatLng(results[0].center.lat, results[0].center.lng);
 			create_marker(results[0].center.lat, results[0].center.lng);
+			document.getElementById("addr_lookup_results").innerHTML = results[0].name;
 		});
 	}
 
