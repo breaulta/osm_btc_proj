@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
    crossorigin=""/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
 <title>OpenStreetMap test</title>
 <style>
@@ -95,7 +96,9 @@
 		name: <input type="text" id="name">
 		<br>lat: <input type="text" id="latitude">
 		<br>long: <input type="text" id="longitude">
+		<br>address: <input type="text" id="address">
 		<br><button onclick="create_venue()">Add to mySQL database</button>
+		<button onclick="lookup_address()">lookup address</button>
 	</div>
   </div>
 
@@ -127,6 +130,7 @@
 <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
    crossorigin=""></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
 <!--Start Coding-->
 <script>
@@ -148,6 +152,16 @@ var marker_array = [];
 		id: 'mapbox.streets',
 		accessToken: 'pk.eyJ1Ijoia2F3dGh1bGRyb2siLCJhIjoiY2swNzdlcnBqNDN1bDNtbXYxaTZiNzltaiJ9.o6GlDt0dN1jAk9kYAVF2rQ'
 	}).addTo(mymap);
+
+	//geocoding (address lookup)
+	geocoder = new L.Control.Geocoder.Nominatim();
+	function lookup_address(){
+		var address = document.getElementById("address").value;
+		geocoder.geocode(address, function(results) {    
+			latLng= new L.LatLng(results[0].center.lat, results[0].center.lng);
+			create_marker(results[0].center.lat, results[0].center.lng);
+		});
+	}
 
 	//Initial marker/map placement over bend.
 	var venue_bend = L.marker([44.0, -121.3], { title: 'bend' }).addTo(mymap);
@@ -228,9 +242,8 @@ var marker_array = [];
 		console.log("create_overlay entered");
 		modal.style.display = "block";
 		//create_marker(lat, lng);
-        document.getElementById('latitude').value = lat;
-        document.getElementById('longitude').value = lng;
-
+       	document.getElementById('latitude').value = lat;
+       	document.getElementById('longitude').value = lng;
 	}
 
 	//Right click code taken from Leaflet Quickstart Tutorial.
