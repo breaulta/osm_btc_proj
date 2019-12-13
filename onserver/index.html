@@ -36,6 +36,7 @@
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
+  height: 300px;
 }
 
 /* The Close Button */
@@ -75,6 +76,11 @@
 #map_button {
 }
 
+#inner_map {
+	width: 100px;
+	height: 100px;
+}
+
 </style></head>
 <body>
 <!--HTML goes here.-->
@@ -88,20 +94,19 @@
 
 <!-- The Modal -->
 <div id="myModal" class="modal">
-
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close">&times;</span>
 	<div>
 		name: <input type="text" id="name">
-		<br>lat: <input type="text" id="latitude">
-		<br>long: <input type="text" id="longitude">
-		<br>address: <input type="text" id="address">
-		<br><button onclick="create_venue()">Add to mySQL database</button>
+		lat: <input type="text" id="latitude">
+		long: <input type="text" id="longitude">
+		address: <input type="text" id="address">
+		<button onclick="create_venue()">Add to mySQL database</button>
 		<button onclick="lookup_address()">lookup address</button>
+  		<div id="inner_map"></div>
 	</div>
   </div>
-
 </div>
 
 <div id="inputs_add">
@@ -153,6 +158,24 @@ var marker_array = [];
 		id: 'mapbox.streets',
 		accessToken: 'pk.eyJ1Ijoia2F3dGh1bGRyb2siLCJhIjoiY2swNzdlcnBqNDN1bDNtbXYxaTZiNzltaiJ9.o6GlDt0dN1jAk9kYAVF2rQ'
 	}).addTo(mymap);
+
+	var minimap = L.map('inner_map');
+	//create handler function on map load (to solve resizing issue)
+	minimap.on('load', onMapLoad);
+	//create map for modal
+	minimap.setView([44.0, -121.3], 10);
+	//add different tile layer
+	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(minimap);
+	//Callback function from above
+	function onMapLoad(){
+		alert('minimap loaded');
+		setTimeout(function() {
+    		minimap.invalidateSize();
+  		}, 10);
+
+	}
 
 	//geocoding (address lookup)
 	geocoder = new L.Control.Geocoder.Nominatim();
@@ -279,6 +302,7 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
+
 
 
 </script>
