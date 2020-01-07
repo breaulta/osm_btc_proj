@@ -52,7 +52,7 @@ function delete_loc_from_sql(name, callback) {
 
 function load_table_from_sql(callback){
 	var reply = '';
-	var sql = "SELECT * FROM venues";
+	var sql = "SELECT name, latitude, longitude FROM venues";
 	con.query( sql, function (err, results, fields) {
 		var stream = fs.createWriteStream("LOAD_TABLE_TEST.txt");
 		stream.once('open', function(fd) {
