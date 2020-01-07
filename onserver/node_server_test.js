@@ -55,20 +55,20 @@ function load_table_from_sql(callback){
 	var sql = "SELECT * FROM venues";
 	con.query( sql, function (err, results, fields) {
 		var stream = fs.createWriteStream("LOAD_TABLE_TEST.txt");
-            stream.once('open', function(fd) {
-				if (err) {
-            		stream.write("Error:\n");
-            		stream.write(JSON.stringify(err));
-					stream.end();
-            	} else {
-					stream.write("\nResults:\n");
-            		stream.write(JSON.stringify(results));
-					stream.write("\nFields:\n");
-            		stream.write(JSON.stringify(fields));
-					stream.end();
-					callback(JSON.stringify(results));
-				}
-        	});
+		stream.once('open', function(fd) {
+			if (err) {
+				stream.write("Error:\n");
+				stream.write(JSON.stringify(err));
+				stream.end();
+			} else {
+				stream.write("\nResults:\n");
+				stream.write(JSON.stringify(results));
+				stream.write("\nFields:\n");
+				stream.write(JSON.stringify(fields));
+				stream.end();
+				callback(JSON.stringify(results));
+			}
+		});
 	});
 }
 
@@ -92,20 +92,27 @@ http.createServer(function(request, response) {
         });
         request.on('end', function () {	//We have received everything from the POST request.
 			//Take the POST request data and put into object as key-value pairs.
-            var post = qs.parse(body);
+
+var stream = fs.createWriteStream("payload_body.txt");
+stream.once('open', function(fd) {
+	stream.write(JSON.stringify(body));
+	stream.end();
+});
+			var clean_body = sanitizeHtml(body);
+            var post = qs.parse(clean_body);
 			//Sanitize user inputs to prevent cross site scripting.
-			if(post.venue){ clean_venue = sanitizeHtml(post.venue); }
+		/*	if(post.venue){ clean_venue = sanitizeHtml(post.venue); }
 			if(post.latitude){ clean_lat= sanitizeHtml(post.latitude); }
-			if(post.longitude){ clean_long= sanitizeHtml(post.longitude); }
+			if(post.longitude){ clean_long= sanitizeHtml(post.longitude); } */
 			if(post.action == 'add'){	//I chose to use 'add' to denote when to make an insertion query.
 				//Using the node callback structure on function calls is a must in node.
-				add_loc_to_sql(clean_venue, clean_lat, clean_long, function(result){
+				add_loc_to_sql(post.venue, post.latitude, post.longitude, function(result){
 					//This code will execute once the query has completed and the callback has returned with the 'result' string.
 					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
                     response.end(result);
 				});
 			}else if(post.action == 'delete') { //I chose to use 'delete' to denote when to make a delete query.
-				delete_loc_from_sql(clean_venue, function(result){
+				delete_loc_from_sql(post.venue, function(result){
 					//This code will execute once the query has completed and the callback has returned with the 'result' string.
 					response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
 					response.end(result);
