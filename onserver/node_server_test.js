@@ -92,14 +92,20 @@ http.createServer(function(request, response) {
         });
         request.on('end', function () {	//We have received everything from the POST request.
 			//Take the POST request data and put into object as key-value pairs.
+			var clean_body = sanitizeHtml(body);
+            var post = qs.parse(clean_body);
 
 var stream = fs.createWriteStream("payload_body.txt");
 stream.once('open', function(fd) {
-	stream.write(JSON.stringify(body));
+	stream.write('      body=');
+	stream.write(body);
+	stream.write('\n');
+	stream.write('clean_body=');
+	stream.write(clean_body);
+	stream.write('\n');
+
 	stream.end();
 });
-			var clean_body = sanitizeHtml(body);
-            var post = qs.parse(clean_body);
 			//Sanitize user inputs to prevent cross site scripting.
 		/*	if(post.venue){ clean_venue = sanitizeHtml(post.venue); }
 			if(post.latitude){ clean_lat= sanitizeHtml(post.latitude); }
