@@ -149,7 +149,7 @@ var marker_array = [];
 	}
 
 	//center map on bend
-	var mymap = L.map('mapid').setView([44.0, -121.3], 5);
+	var mymap = L.map("mapid", {zoomControl:false}).setView([44.0, -121.3], 5);
 
 	//Load slippy map.
 	var titleLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -157,6 +157,11 @@ var marker_array = [];
 		maxZoom: 18,
 		id: 'mapbox.streets',
 		accessToken: 'pk.eyJ1Ijoia2F3dGh1bGRyb2siLCJhIjoiY2swNzdlcnBqNDN1bDNtbXYxaTZiNzltaiJ9.o6GlDt0dN1jAk9kYAVF2rQ'
+	}).addTo(mymap);
+
+	//Align zoom control to right side.
+	L.control.zoom({
+		position:'topright'
 	}).addTo(mymap);
 
 	var minimap = L.map('inner_map');
