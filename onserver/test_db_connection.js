@@ -20,6 +20,6 @@ con.connect(function(err) {
   var sql = "INSERT INTO venues ( name, latitude, longitude ) VALUES ('hillsdale', 41.9, -84.6)";
   con.query(sql , function (err, result) {
     if (err) throw err;
-    console.log("Database created");
+    console.log("Entry into table completed sucessfully.");
   });
 });
