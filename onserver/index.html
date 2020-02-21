@@ -68,17 +68,26 @@
 
 #button-wrapper {
     position: absolute;
-    bottom: 10px;
+    top: 20px;
+	left: 20px;
     width: 100%;
 	z-index: 1000;
 }
 
+#locations_search {
+	font-size: 24;
+	width: 200px;
+	height: 40px;
+}
 #map_button {
+	font-size: 24;
+	width: 200px;
+	height: 40px;
 }
 
 #inner_map {
-	width: 100px;
-	height: 100px;
+	width: 300px;
+	height: 200px;
 }
 
 </style></head>
@@ -88,6 +97,7 @@
 	<div id="mapid"></div>
 	<div id="button-wrapper">
 		<!-- Idea for this taken from https://stackoverflow.com/questions/17942889/how-to-put-buttons-on-the-leaflet-map -->
+		<input type="text" id="locations_search" placeholder="Search for Locker Locations"><br>
 		<button id="map_button" onclick="create_modal()">Create New Little Locker</button>
 	 </div> 
 </div>
@@ -141,11 +151,20 @@
 <!--Start Coding-->
 <script>
 var marker_array = [];
+var host = location.hostname;
+var server;
+if( host === "localhost" || host === "127.0.0.1" || host === ""){
+	server = "localhost";
+} else {
+	server = "http://qrcodes4bitcoin.com/server";
+}
 
 	//When the page loads, run an initialization function.	
 	window.onload = function () {
+		load_locations();
 		//put the map loading stuff here?
 		//and then load the markers from sql?
+    	alert(host);
 	}
 
 	//center map on bend
@@ -239,7 +258,8 @@ var marker_array = [];
 			//Center the map on the newly created marker. 10 is the zoom factor.
 			mymap.setView([v_latitude, v_longitude], 10);
 			//Make ajax request.
-			xhttp.open("POST", "http://qrcodes4bitcoin.com/server", true);
+			//xhttp.open("POST", "http://qrcodes4bitcoin.com/server", true);
+			xhttp.open("POST", server, true);
 			//This content type was the first type that worked.  We can change if we want. The data format will have to change on the server
 			//as well if we do change or it won't work however.
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -250,14 +270,14 @@ var marker_array = [];
 	function delete_location(){
 		var d_name = document.getElementById('delete_name').value;
 		var ddata = "action=delete&venue="+ d_name;
-		xhttp.open("POST", "http://qrcodes4bitcoin.com/server", true);
+		xhttp.open("POST", server, true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhttp.send(ddata);
 	}
 
 	function load_locations(){
 		var ldata = "action=load";
-		xhttp.open("POST", "http://qrcodes4bitcoin.com/server", true);
+		xhttp.open("POST", server, true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhttp.send(ldata);
 	}
