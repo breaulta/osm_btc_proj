@@ -75,6 +75,7 @@ function load_table_from_sql(callback){
 http.createServer(function(request, response) {
 	//Handle POST request from client.
     if(request.method == 'POST') {
+	    console.log("New request received!");
 		var body = '';
 		var clean_venue, clean_lat, clean_long;
 		//When we have all of the data, run this function which stores the data into the variable 'body'.
@@ -137,9 +138,10 @@ stream.once('open', function(fd) {
   			stream.write("non-POST request received!\n");
 			stream.end();
 		});
-
+console.log("non post request received.");
         response.writeHead(200, "OK", {'Content-Type': 'text/plain'});
         response.end('non-POST request received.');
     }
 
-}).listen();
+}).listen(0.0.0.0:8080);
+
