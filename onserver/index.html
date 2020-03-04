@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
    crossorigin=""/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-
 <title>OpenStreetMap test</title>
 <style>
 
@@ -154,7 +155,7 @@ var marker_array = [];
 var host = location.hostname;
 var server;
 if( host === "localhost" || host === "127.0.0.1" || host === ""){
-	server = "localhost";
+	server = "0.0.0.0";
 } else {
 	server = "http://qrcodes4bitcoin.com/server";
 }
